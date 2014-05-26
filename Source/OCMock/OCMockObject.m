@@ -63,6 +63,21 @@
 	return mock;
 }
 
++ (id)strictMockForClass:(Class)aClass
+{
+    return [self _makeStrict:[self mockForClass:aClass]];
+}
+
++ (id)strictPartialMockForObject:(NSObject *)anObject;
+{
+    return [self _makeStrict:[self partialMockForObject:anObject]];
+}
+
++ (id)_makeStrict:(OCMockObject *)mock
+{
+	mock.isStrict = YES;
+	return mock;
+}
 
 + (id)observerMock
 {

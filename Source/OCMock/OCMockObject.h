@@ -28,6 +28,9 @@
 + (id)niceMockForClass:(Class)aClass;
 + (id)niceMockForProtocol:(Protocol *)aProtocol;
 
++ (id)strictMockForClass:(Class)aClass;
++ (id)strictPartialMockForObject:(NSObject *)anObject;
+
 + (id)observerMock;
 
 - (id)init;
@@ -56,6 +59,8 @@
 
 - (void)verifyInvocation:(OCMInvocationMatcher *)matcher;
 - (void)verifyInvocation:(OCMInvocationMatcher *)matcher atLocation:(OCMLocation *)location;
+
+@property (nonatomic, readwrite) BOOL isStrict;
 
 @end
 

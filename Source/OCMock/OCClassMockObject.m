@@ -117,9 +117,26 @@
 	OCClassMockObject *mock = OCMGetAssociatedMockForClass((Class)self);
 	if([mock handleInvocation:anInvocation] == NO)
     {
-        // if mock doesn't want to handle the invocation, maybe all expects have occurred, we remove the forwarder and try again
-        [mock removeForwarderForClassMethodSelector:[anInvocation selector]];
-        [anInvocation invoke];
+        if (mock.isStrict != NO) {
+            [mock
+              removeForwarderForClassMethodSelector:[anInvocation selector]];
+            NSException *exception =
+                [NSException
+                  exceptionWithName:NSInternalInconsistencyException
+                             reason:[NSString
+                                       stringWithFormat:
+                                           @"%@: unexpected method invoked: %@ %@",
+                                           [mock description],
+                                           [anInvocation invocationDescription],
+                                           [mock _recorderDescriptions:NO]]
+                           userInfo:nil];
+            [mock->exceptions addObject:exception];
+            [exception raise];
+        } else {
+            // if mock doesn't want to handle the invocation, maybe all expects have occurred, we remove the forwarder and try again
+            [mock removeForwarderForClassMethodSelector:[anInvocation selector]];
+            [anInvocation invoke];
+        }
     }
 }
 
